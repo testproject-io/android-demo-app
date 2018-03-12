@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TestProject Demo</string>
+    <string name="main_activity_title">Demo App</string>
+    <string-array name="titles_array">
+        <item>Mr</item>
+        <item>Mrs</item>
+        <item>Ms</item>
+        <item>Miss</item>
+    </string-array>
+</resources>
