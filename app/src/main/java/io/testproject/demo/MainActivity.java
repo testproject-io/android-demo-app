@@ -1,10 +1,16 @@
 package io.testproject.demo;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.usb.UsbManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,13 +23,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText firstName;
-    private EditText lastName;
-    private TextView fullName;
-    private TextView welcome;
-
-    private List<String> names;
-    private ArrayAdapter<String> namesAdapter;
+    private EditText txtName;
+    private EditText txtPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,45 +32,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Acquire references to UI widgets
-        this.firstName = (EditText) findViewById(R.id.firstName);
-        this.lastName = (EditText) findViewById(R.id.lastName);
-        this.fullName = (TextView) findViewById(R.id.fullName);
+        this.txtName = (EditText) findViewById(R.id.name);
+        this.txtPassword = (EditText) findViewById(R.id.password);
 
-        // Update Full Name when First/Last names change
-        this.firstName.addTextChangedListener(getFullNameTextWatcher());
-        this.lastName.addTextChangedListener(getFullNameTextWatcher());
-
-        // Setup Persons ListView
-        this.names = new ArrayList<>();
-        namesAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-        ListView listView = (ListView) findViewById(R.id.persons);
-        listView.setAdapter(namesAdapter);
+        // Submit when password provided
+        txtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    performLogin(null);
+                    return true;
+                }
+                return false;
+            }});
     }
 
-    public void addPerson(View view) {
-        names.add(fullName.getText().toString());
-        namesAdapter.notifyDataSetInvalidated();
+    public void performLogin(View view) {
+        boolean hasErrors = false;
 
+        if (txtName.getText().length() == 0) {
+            txtName.setError("Please provide your name");
+            hasErrors = true;
+        } else {
+            txtName.setError(null);
+        }
+
+        if (!txtPassword.getText().toString().equals("12345")) {
+            txtPassword.setError("This password is incorrect");
+            hasErrors = true;
+        } else {
+            txtPassword.setError(null);
+        }
+
+        if (!hasErrors) {
+            Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+            intent.putExtra("FULL_NAME", txtName.getText().toString());
+            startActivity(intent);
+        }
     }
 
-    private TextWatcher getFullNameTextWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                fullName.setText(firstName.getText() + " " + lastName.getText());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-    }
 }
