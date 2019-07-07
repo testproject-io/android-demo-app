@@ -43,6 +43,7 @@
             <EditText
                 android:id="@+id/name"
                 android:contentDescription="@string/name_description"
+                android:hint="@string/name_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -72,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:contentDescription="@string/password_description"
                 android:hint="@string/password_description"
                 android:inputType="textPassword"
                 android:imeOptions="flagNoExtractUi"
